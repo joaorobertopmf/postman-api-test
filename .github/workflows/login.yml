@@ -37,7 +37,7 @@ jobs:
 
       # Runs a set of commands using the runners shell
       - name: Step 3 Run the collection
-        run: newman run ./2_login.json -e ./TQA-Desenvolvimento.json --delay-report 1 --reporters cli, -r htmlextra --reporter-htmlextra-export ./results/report.html
+        run: newman run ./2_login.json -e ./TQA-Desenvolvimento.json --reporters cli, -r htmlextra --reporter-htmlextra-export ./results/report.html
 
       # Runs a set of commands using the runners shell
       - name: Step 4 Archive production artifacts
