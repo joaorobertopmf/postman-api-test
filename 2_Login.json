@@ -1,0 +1,311 @@
+{
+	"info": {
+		"_postman_id": "b482bfb9-8319-4617-9250-5f569b92d457",
+		"name": "2_Login",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29411676"
+	},
+	"item": [
+		{
+			"name": "signup - sucess",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Validate that the response has status code 200\", function () {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"    //pm.expect(pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Check if token exists\", function () {",
+							"    var responseJSON = pm.response.json();",
+							"    pm.expect(responseJSON).to.be.an('object');",
+							"    pm.expect(responseJSON).to.have.property('token');",
+							"    pm.expect(responseJSON.token).to.exist.and.to.be.a('string');",
+							"});",
+							"",
+							"pm.test(\"Check if 'fullName' in the request and response are the same\", function () {",
+							"    pm.expect(pm.environment.get(\"FullName\")).to.eql(pm.response.json().user.fullName);    ",
+							"});",
+							"",
+							"pm.test(\"Check if 'mail' in the request and response are the same\", function () {",
+							"    pm.expect(pm.environment.get(\"Email\")).to.eql(pm.response.json().user.mail);",
+							"});",
+							"",
+							"pm.test(\"Check if 'accessProfile' in the request and response are the same\", function () {",
+							"    pm.expect(pm.environment.get(\"AccessProfile\")).to.eql(pm.response.json().user.accessProfile);",
+							"});",
+							"",
+							"pm.test(\"Check if 'status' is true\", function () {",
+							"    pm.expect(pm.response.json().user.status).to.eql(true);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"window = {};\r",
+							"pm.sendRequest(\"https://cdnjs.cloudflare.com/ajax/libs/Faker/3.1.0/faker.min.js\", (error, response) => {\r",
+							"    if (error || response.code !== 200) {\r",
+							"        pm.expect.fail(\"Could not load external library\");\r",
+							"    }\r",
+							"    eval(response.text());\r",
+							"    \r",
+							"    window.faker.locale = \"pt_BR\";\r",
+							"    var name = window.faker.name.findName();\r",
+							"\r",
+							"    pm.environment.set(\"FirstName\", window.faker.name.firstName());\r",
+							"    pm.environment.set(\"LastName\", window.faker.name.lastName());\r",
+							"    pm.environment.set(\"FullName\", pm.environment.get(\"FirstName\") + \" \" + pm.environment.get(\"LastName\"));\r",
+							"    pm.environment.set(\"EmailProvider\", generateEmailProvider());\r",
+							"    pm.environment.set(\"AccessProfile\", generateAccessProfile());\r",
+							"    pm.environment.set(\"Email\", pm.environment.get(\"FirstName\") + \"-\" + pm.variables.replaceIn('{{$timestamp}}') + pm.environment.get(\"EmailProvider\"));\r",
+							"})\r",
+							"\r",
+							"\r",
+							"// function generateFirstName() {\r",
+							"//     let firstName = [\"João\", \"Bruna\", \"Pedro\", \"Lucas\", \"Willian\", \"Beatriz\", \"Danielle\", \"Viviane\", \"Roger\", \"Eurenice\", \"Francisco\", \"Roberto\"];\r",
+							"    \r",
+							"//     let randomItem = firstName[Math.floor(Math.random() * firstName.length)];\r",
+							"    \r",
+							"//     return randomItem;\r",
+							"// }\r",
+							"\r",
+							"//pm.environment.set(\"FirstName\", generateFirstName());\r",
+							"\r",
+							"\r",
+							"\r",
+							"// function generateLastName() {\r",
+							"//     let lastName = [\"Alves de Souza\", \"Silva Santos\", \"Alves da Silva\", \"de Souza\", \"de Lima\", \"de Carvalho\", \"de Morais\"];\r",
+							"    \r",
+							"//     let randomItem = lastName[Math.floor(Math.random() * lastName.length)];\r",
+							"    \r",
+							"//     return randomItem;\r",
+							"// }\r",
+							"\r",
+							"//pm.environment.set(\"LastName\", generateLastName());\r",
+							"\r",
+							"function generateAccessProfile() {\r",
+							"    let accessProfile = [\"ADMIN\", \"FINANCEIRO\", \"ADMINISTRATIVO\", \"TI\", \"CONTROLADORIA\"];\r",
+							"    \r",
+							"    let randomItem = accessProfile[Math.floor(Math.random() * accessProfile.length)];\r",
+							"    \r",
+							"    return randomItem;\r",
+							"}\r",
+							"\r",
+							"function generateAccessProfile() {\r",
+							"    let accessProfile = [\"ADMIN\", \"FINANCEIRO\", \"ADMINISTRATIVO\", \"TI\", \"CONTROLADORIA\"];\r",
+							"    \r",
+							"    let randomItem = accessProfile[Math.floor(Math.random() * accessProfile.length)];\r",
+							"    \r",
+							"    return randomItem;\r",
+							"}\r",
+							"\r",
+							"\r",
+							"\r",
+							"function generateEmailProvider() {\r",
+							"    let emailProvider = [\"@yahoo.com.br\", \"@hotmail.com\", \"@gmail.com\", \"@terra.com.br\", \"@globo.com\", \"@ig.com.br\"];\r",
+							"    \r",
+							"    let randomItem = emailProvider[Math.floor(Math.random() * emailProvider.length)];\r",
+							"    \r",
+							"    return randomItem;\r",
+							"}\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"fullName\": \"{{FullName}}\",\r\n    \"mail\": \"{{Email}}\",\r\n    \"password\": \"{{Password}}\",\r\n    \"confirmPassword\": \"{{Password}}\",\r\n    \"accessProfile\": \"{{AccessProfile}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/signup",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login - sucess",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Validate that the response has status code 200\", function () {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"    //pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Check if token exists\", function () {",
+							"    var responseJSON = pm.response.json();",
+							"    pm.expect(responseJSON).to.be.an('object');",
+							"    pm.expect(responseJSON).to.have.property('token');",
+							"    pm.expect(responseJSON.token).to.exist.and.to.be.a('string');",
+							"});",
+							"",
+							"pm.test(\"Check if 'fullName' in the request and response are the same\", function () {",
+							"    pm.expect(pm.environment.get(\"FullName\")).to.eql(pm.response.json().user.fullName);    ",
+							"});",
+							"",
+							"pm.test(\"Check if 'mail' in the request and response are the same\", function () {",
+							"    pm.expect(pm.environment.get(\"Email\")).to.eql(pm.response.json().user.mail);",
+							"});",
+							"",
+							"pm.test(\"Check if 'accessProfile' in the request and response are the same\", function () {",
+							"    pm.expect(pm.environment.get(\"AccessProfile\")).to.eql(pm.response.json().user.accessProfile);",
+							"});",
+							"",
+							"pm.test(\"Check if 'status' is true\", function () {",
+							"    pm.expect(pm.response.json().user.status).to.eql(true);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"fullName\": \"{{FullName}}\",\r\n    \"mail\": \"{{Email}}\",\r\n    \"password\": \"{{Password}}\",\r\n    \"confirmPassword\": \"{{Password}}\",\r\n    \"accessProfile\": \"{{AccessProfile}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/login",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login - mail is required",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Validate that the response has status code 400\", function () {",
+							"    pm.expect(pm.response.code).to.equal(400);",
+							"});",
+							"",
+							"pm.test(\"Check 'mail' required message: O campo 'mail' é obrigatório\", function () {          ",
+							"    pm.expect(pm.response.json().alert[0]).to.eql(pm.collectionVariables.get(\"MsgMailRequired\"));",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"fullName\": \"{{FullName}}\",\r\n    \"mail\": \"\",\r\n    \"password\": \"{{Password}}\",\r\n    \"confirmPassword\": \"{{Password}}\",\r\n    \"accessProfile\": \"{{AccessProfile}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/login",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "MsgMailRequired",
+			"value": "Os dados informados são inválidos",
+			"type": "string"
+		}
+	]
+}
